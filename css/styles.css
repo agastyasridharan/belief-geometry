@@ -1,0 +1,732 @@
+/**
+ * Belief Geometry - Styles
+ *
+ * A visualization of belief state dynamics for Hidden Markov Models.
+ * Demonstrates how Bayesian inference creates fractal structures in belief space.
+ *
+ * @author Agastya Sridharan
+ * @license MIT
+ */
+
+/* ==========================================================================
+   CSS Custom Properties (Configuration)
+   ========================================================================== */
+
+:root {
+    /* Color Palette - Warm, Academic Aesthetic */
+    --color-bg: #faf6f1;
+    --color-bg-panel: #fffdf9;
+    --color-bg-secondary: #f8f4ed;
+    --color-bg-tertiary: #f0ebe3;
+
+    --color-text-primary: #2c2416;
+    --color-text-secondary: #3d3020;
+    --color-text-muted: #6b5d4d;
+    --color-text-subtle: #a89880;
+
+    --color-border: #e8e0d4;
+    --color-border-dark: #c4b8a8;
+    --color-border-light: #ddd5c8;
+
+    /* Accent Colors */
+    --color-accent-teal: #2a9d8f;
+    --color-accent-teal-dark: #1f7a6e;
+    --color-accent-green: #4a7c59;
+    --color-accent-green-dark: #3d6648;
+    --color-accent-orange: #d97706;
+    --color-accent-red: #c25450;
+    --color-accent-blue: #4a6fa5;
+    --color-accent-purple: #7a6890;
+    --color-accent-purple-light: #b8a8c8;
+
+    /* Typography */
+    --font-serif: 'EB Garamond', Georgia, 'Times New Roman', serif;
+    --font-math: 'Times New Roman', serif;
+    --font-system: system-ui, -apple-system, sans-serif;
+
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 14px;
+    --spacing-lg: 20px;
+    --spacing-xl: 28px;
+
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 6px rgba(44, 36, 22, 0.05);
+    --shadow-md: 0 2px 8px rgba(44, 36, 22, 0.2);
+}
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-serif);
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+h1 {
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin-bottom: var(--spacing-xs);
+    color: #1a1408;
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text-primary);
+}
+
+h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    margin-top: 16px;
+    color: var(--color-text-secondary);
+}
+
+h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #5c4a2a;
+}
+
+.subtitle {
+    color: var(--color-text-muted);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    align-items: stretch;
+}
+
+.main-grid > div:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.main-grid > div:first-child > .panel:last-child {
+    flex-grow: 1;
+}
+
+@media (max-width: 768px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.right-panels {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.right-panels > .panel:last-child {
+    flex-grow: 1;
+}
+
+/* ==========================================================================
+   Panels
+   ========================================================================== */
+
+.panel {
+    background: var(--color-bg-panel);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   Canvas
+   ========================================================================== */
+
+#canvas,
+#canvas2,
+#canvas3 {
+    width: 100%;
+    aspect-ratio: 1;
+    display: block;
+    border-radius: var(--radius-sm);
+}
+
+/* ==========================================================================
+   Controls & Buttons
+   ========================================================================== */
+
+.controls {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: 12px;
+}
+
+button {
+    padding: 6px 14px;
+    border: 1px solid var(--color-border-dark);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--color-bg-panel);
+    color: var(--color-text-primary);
+}
+
+button:hover {
+    background: #f5f0e8;
+    border-color: var(--color-text-subtle);
+}
+
+.btn-run {
+    background: var(--color-accent-green);
+    color: white;
+    border-color: var(--color-accent-green-dark);
+}
+
+.btn-run:hover {
+    background: var(--color-accent-green-dark);
+}
+
+.btn-run.running {
+    background: #a65d57;
+    border-color: #8b4d48;
+}
+
+.btn-run.running:hover {
+    background: #8b4d48;
+}
+
+/* ==========================================================================
+   Sliders
+   ========================================================================== */
+
+.slider-label {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-xs);
+}
+
+input[type="range"] {
+    width: 100%;
+    margin-top: var(--spacing-xs);
+    accent-color: var(--color-accent-green);
+}
+
+/* ==========================================================================
+   Belief State Bars
+   ========================================================================== */
+
+.belief-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: 6px;
+}
+
+.belief-label {
+    font-size: 0.8rem;
+    width: 55px;
+    color: var(--color-text-secondary);
+}
+
+.belief-track {
+    flex: 1;
+    height: 14px;
+    background: var(--color-bg-tertiary);
+    border-radius: 7px;
+    overflow: hidden;
+    border: 1px solid var(--color-border-light);
+}
+
+.belief-fill {
+    height: 100%;
+    transition: width 0.15s ease;
+}
+
+.belief-value {
+    font-size: 0.8rem;
+    width: 45px;
+    text-align: right;
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.state-indicator {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.state-indicator span {
+    color: var(--color-accent-orange);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Observations Display
+   ========================================================================== */
+
+.current-obs-section {
+    padding: 12px;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+    text-align: center;
+    border: 1px solid var(--color-border);
+}
+
+.current-obs-token {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    box-shadow: var(--shadow-md);
+}
+
+.obs-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    min-height: 80px;
+    padding: 12px;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+    align-content: flex-start;
+}
+
+.obs-row {
+    display: flex;
+    gap: 16px;
+    margin-top: var(--spacing-md);
+}
+
+.obs-row .panel:first-child {
+    flex-shrink: 0;
+}
+
+.obs-row .panel:last-child {
+    flex-grow: 1;
+}
+
+.obs-token {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+}
+
+.obs-0 { background: var(--color-accent-red); }
+.obs-1 { background: var(--color-accent-green); }
+.obs-2 { background: var(--color-accent-blue); }
+
+.empty-text {
+    color: var(--color-text-subtle);
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+/* ==========================================================================
+   Legend
+   ========================================================================== */
+
+.legend {
+    margin-top: 16px;
+}
+
+.legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-size: 0.8rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.legend-dot.belief { background: var(--color-accent-teal); }
+.legend-dot.true-state {
+    background: transparent;
+    border: 2px solid var(--color-accent-orange);
+}
+.legend-dot.fractal {
+    background: var(--color-accent-purple-light);
+    opacity: 0.6;
+}
+
+/* ==========================================================================
+   HMM Explanation Section
+   ========================================================================== */
+
+.hmm-explanation {
+    margin-top: var(--spacing-xl);
+}
+
+.hmm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+}
+
+@media (max-width: 900px) {
+    .hmm-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   Math Containers
+   ========================================================================== */
+
+.math-container {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    border: 1px solid var(--color-border);
+}
+
+.math-title {
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text-primary);
+    font-size: 1.15rem;
+}
+
+.math-subtitle {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    margin-bottom: 18px;
+    font-style: italic;
+}
+
+.math-block {
+    background: var(--color-bg-panel);
+    padding: 22px;
+    border-radius: var(--radius-md);
+    text-align: center;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+}
+
+/* KaTeX Styling */
+.katex {
+    color: var(--color-text-primary);
+    font-size: 1.1em;
+}
+
+/* ==========================================================================
+   Explanation Text
+   ========================================================================== */
+
+.explanation-text {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-top: 16px;
+}
+
+.explanation-text strong {
+    color: #1a1408;
+    font-weight: 600;
+}
+
+ul.explanation-list {
+    margin-left: 24px;
+    margin-top: var(--spacing-md);
+}
+
+ul.explanation-list li {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    line-height: 1.65;
+}
+
+/* ==========================================================================
+   Formula Steps
+   ========================================================================== */
+
+.formula-step {
+    margin: 18px 0;
+    padding: 18px;
+    background: var(--color-bg-panel);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-accent-teal);
+}
+
+.formula-step-label {
+    font-size: 0.85rem;
+    color: var(--color-accent-teal);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Insight Box
+   ========================================================================== */
+
+.insight-box {
+    margin-top: var(--spacing-xl);
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(176, 156, 196, 0.08), rgba(42, 157, 143, 0.06));
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(176, 156, 196, 0.2);
+}
+
+.insight-box h4 {
+    color: var(--color-accent-purple);
+    margin-bottom: var(--spacing-md);
+}
+
+/* ==========================================================================
+   Tab Navigation
+   ========================================================================== */
+
+.tab-navigation {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 0;
+}
+
+.tab-button {
+    padding: var(--spacing-sm) 18px;
+    border: none;
+    background: transparent;
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+    color: var(--color-text-primary);
+    background: rgba(42, 157, 143, 0.05);
+}
+
+.tab-button.active {
+    color: var(--color-accent-teal);
+    border-bottom-color: var(--color-accent-teal);
+    background: transparent;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ==========================================================================
+   SVG Diagrams (TikZ-style)
+   ========================================================================== */
+
+.tikz-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+}
+
+.tikz-diagram svg {
+    max-width: 100%;
+    height: auto;
+}
+
+.tikz-diagram text {
+    font-family: var(--font-serif);
+}
+
+.figure-caption {
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin-top: 12px;
+}
+
+/* ==========================================================================
+   Calculation Display
+   ========================================================================== */
+
+.calculation-display {
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+.calc-step {
+    margin: 16px 0;
+    padding: 16px 20px;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+    border-left: 3px solid #b8860b;
+}
+
+.calc-step-label {
+    font-size: 0.85rem;
+    color: #b8860b;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.calc-step .katex {
+    font-size: 1.05em;
+}
+
+.calc-result {
+    margin-top: 16px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, rgba(42, 157, 143, 0.1), rgba(42, 157, 143, 0.05));
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-accent-teal);
+}
+
+.calc-result .calc-step-label {
+    color: var(--color-accent-teal);
+}
+
+/* ==========================================================================
+   Work in Progress Overlay
+   ========================================================================== */
+
+.wip-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    text-align: center;
+    padding: 60px 40px;
+}
+
+.wip-icon {
+    font-size: 3rem;
+    margin-bottom: 24px;
+    opacity: 0.6;
+}
+
+.wip-title {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: 12px;
+}
+
+.wip-description {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    max-width: 500px;
+    line-height: 1.6;
+    margin-bottom: var(--spacing-xl);
+    font-style: italic;
+}
+
+.btn-preview {
+    padding: 12px 28px;
+    font-size: 0.95rem;
+    background: #6b7c6e;
+    color: var(--color-bg);
+    border: 1px solid #5a6b5d;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(107, 124, 110, 0.2);
+}
+
+.btn-preview:hover {
+    background: #5a6b5d;
+    box-shadow: 0 3px 8px rgba(107, 124, 110, 0.3);
+    transform: translateY(-1px);
+}
+
+.tab-content-inner {
+    display: none;
+}
+
+.tab-content-inner.revealed {
+    display: block;
+}
+
+.wip-overlay.hidden {
+    display: none;
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+.color-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-right: 6px;
+}
